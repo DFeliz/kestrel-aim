@@ -9,7 +9,12 @@
 #include <cstdio>
 #include <windows.h>
 
-struct SensitivityState { void updateDynamic(double, bool){} };
+#include <cstdio>
+struct SensitivityState {
+    void updateDynamic(double m, bool b){
+        std::fprintf(stderr, "\rmult=%.3f y=%d   ", m, b?1:0);
+    }
+};
 SensitivityState* g_sensState = new SensitivityState();
 
 void getLatestMouseDelta(double& dx, double& dy){
@@ -109,6 +114,17 @@ int main(){
             else if(k=="progressive_slowdown_radius") cfg.progressive_slowdown_radius=dv;
             else if(k=="magnetic_acceleration_radius") cfg.magnetic_acceleration_radius=dv;
             else if(k=="magnetic_friction_radius") cfg.magnetic_friction_radius=dv;
+            else if(k=="outline_yellow_r") cfg.outline_yellow_r=iv;
+            else if(k=="outline_yellow_g") cfg.outline_yellow_g=iv;
+            else if(k=="outline_yellow_b") cfg.outline_yellow_b=iv;
+            else if(k=="outline_cyan_r") cfg.outline_cyan_r=iv;
+            else if(k=="outline_cyan_g") cfg.outline_cyan_g=iv;
+            else if(k=="outline_cyan_b") cfg.outline_cyan_b=iv;
+            else if(k=="outline_tolerance") cfg.outline_tolerance=iv;
+            else if(k=="cluster_distance") cfg.cluster_distance=iv;
+            else if(k=="min_cluster_pixels") cfg.min_cluster_pixels=iv;
+            else if(k=="min_cluster_width") cfg.min_cluster_width=iv;
+            else if(k=="min_cluster_height") cfg.min_cluster_height=iv;
             else std::cout << "unknown key\n";
         } else {
             std::cout << "unknown command\n";
@@ -120,3 +136,4 @@ int main(){
     std::cout << "\nshutdown\n";
     return 0;
 }
+
