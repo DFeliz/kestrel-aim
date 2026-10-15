@@ -41,7 +41,7 @@ void BackendLoop(Config& cfg,
         FrameView fv = capture->get_frame();
         if(!fv.valid){ std::this_thread::sleep_for(std::chrono::milliseconds(1)); continue; }
 
-        TargetResult tr = ColorDetection::detect(fv, 35, 5, 3, 3);
+        TargetResult tr = ColorDetection::detect(fv, cfg);
         outTargets.store(tr.clusterCount);
 
         if(tr.found && g_sensState){
@@ -64,3 +64,4 @@ void BackendLoop(Config& cfg,
         if(dt >= 0.5){ outFps.store((double)frames/dt); frames=0; last=now; }
     }
 }
+

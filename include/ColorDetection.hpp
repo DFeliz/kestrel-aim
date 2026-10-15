@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <vector>
 #include "GameCapture.hpp"
+#include "Config.hpp"
 
 struct BoundingBox {
     int x0=0, y0=0, x1=0, y1=0;
@@ -22,29 +23,23 @@ struct TargetResult {
 
 class ColorDetection {
 public:
-    static TargetResult detect(const FrameView& frame,
-                               int clusterDistance = 35,
-                               int minPixels = 5,
-                               int minWidth = 3,
-                               int minHeight = 3);
+    static TargetResult detect(const FrameView& frame, const Config& cfg);
+
 private:
-    static inline bool isTargetPixel(uint8_t R, uint8_t G, uint8_t B){
-        if(G >= 120){
-            int rb = (int)R - (int)B; if(rb < 0) rb = -rb;
-            if(rb > 8) return false;
-            if(((int)R - (int)G) < 50) return false;
-            if(((int)B - (int)G) < 50) return false;
-            if(R < 105) return false;
-            if(B < 105) return false;
-            return true;
-        } else {
-            int rb = (int)R - (int)B; if(rb < 0) rb = -rb;
-            if(rb > 13) return false;
-            if(((int)R - (int)G) < 60) return false;
-            if(((int)B - (int)G) < 60) return false;
-            if(R < 105) return false;
-            if(B < 105) return false;
-            return true;
-        }
+    static inline bool withinTol(int v, int t, int tol){
+        int d = v - t; if(d<0) d=-d;
+        return d <= tol;
+    }
+    static inline bool isOutlinePixel(uint8_t R, uint8_t G, uint8_t B, const Config& cfg){
+        int tol = cfg.outline_tolerance.load();
+        bool yellow =
+            withinTol(R, cfg.outline_yellow_r.load(), tol) &&
+            withinTol(G, cfg.outline_yellow_g.load(), tol) &&
+            withinTol(B, cfg.outline_yellow_b.load(), tol);
+        bool cyan =
+            withinTol(R, cfg.outline_cyan_r.load(), tol) &&
+            withinTol(G, cfg.outline_cyan_g.load(), tol) &&
+            withinTol(B, cfg.outline_cyan_b.load(), tol);
+        return yellow || cyan;
     }
 };

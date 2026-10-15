@@ -1,6 +1,5 @@
 ﻿#include "Config.hpp"
 #include <fstream>
-#include <sstream>
 #include <iostream>
 #include <cctype>
 #include <unordered_map>
@@ -26,9 +25,9 @@ namespace {
         }
         return kv;
     }
-    int toI(const std::string& s,int d){try{return std::stoi(s);}catch(...){return d;}}
+    int    toI(const std::string& s,int d){try{return std::stoi(s);}catch(...){return d;}}
     double toD(const std::string& s,double d){try{return std::stod(s);}catch(...){return d;}}
-    bool toB(const std::string& s,bool d){
+    bool   toB(const std::string& s,bool d){
         if(s=="1"||s=="true"||s=="TRUE"||s=="on") return true;
         if(s=="0"||s=="false"||s=="FALSE"||s=="off") return false;
         return d;
@@ -55,6 +54,17 @@ void Config::loadIni(const std::string& path){
     if(auto v=get("magnetic_acceleration_radius")) magnetic_acceleration_radius=toD(*v,magnetic_acceleration_radius.load());
     if(auto v=get("magnetic_friction_radius")) magnetic_friction_radius=toD(*v,magnetic_friction_radius.load());
     if(auto v=get("capture_method")) capture_method=toI(*v,capture_method.load());
+    if(auto v=get("outline_yellow_r")) outline_yellow_r=toI(*v,outline_yellow_r.load());
+    if(auto v=get("outline_yellow_g")) outline_yellow_g=toI(*v,outline_yellow_g.load());
+    if(auto v=get("outline_yellow_b")) outline_yellow_b=toI(*v,outline_yellow_b.load());
+    if(auto v=get("outline_cyan_r")) outline_cyan_r=toI(*v,outline_cyan_r.load());
+    if(auto v=get("outline_cyan_g")) outline_cyan_g=toI(*v,outline_cyan_g.load());
+    if(auto v=get("outline_cyan_b")) outline_cyan_b=toI(*v,outline_cyan_b.load());
+    if(auto v=get("outline_tolerance")) outline_tolerance=toI(*v,outline_tolerance.load());
+    if(auto v=get("cluster_distance")) cluster_distance=toI(*v,cluster_distance.load());
+    if(auto v=get("min_cluster_pixels")) min_cluster_pixels=toI(*v,min_cluster_pixels.load());
+    if(auto v=get("min_cluster_width")) min_cluster_width=toI(*v,min_cluster_width.load());
+    if(auto v=get("min_cluster_height")) min_cluster_height=toI(*v,min_cluster_height.load());
 }
 
 void Config::saveIni(const std::string& path) const {
@@ -75,12 +85,35 @@ void Config::saveIni(const std::string& path) const {
     f << "magnetic_acceleration_radius=" << magnetic_acceleration_radius.load() << "\n";
     f << "magnetic_friction_radius=" << magnetic_friction_radius.load() << "\n";
     f << "capture_method=" << capture_method.load() << "\n";
+    f << "outline_yellow_r=" << outline_yellow_r.load() << "\n";
+    f << "outline_yellow_g=" << outline_yellow_g.load() << "\n";
+    f << "outline_yellow_b=" << outline_yellow_b.load() << "\n";
+    f << "outline_cyan_r=" << outline_cyan_r.load() << "\n";
+    f << "outline_cyan_g=" << outline_cyan_g.load() << "\n";
+    f << "outline_cyan_b=" << outline_cyan_b.load() << "\n";
+    f << "outline_tolerance=" << outline_tolerance.load() << "\n";
+    f << "cluster_distance=" << cluster_distance.load() << "\n";
+    f << "min_cluster_pixels=" << min_cluster_pixels.load() << "\n";
+    f << "min_cluster_width=" << min_cluster_width.load() << "\n";
+    f << "min_cluster_height=" << min_cluster_height.load() << "\n";
 }
 
 void Config::dump() const {
-    std::cout << "[cfg] max_x=" << max_x.load() << " max_y=" << max_y.load()
+    std::cout << "[cfg] fov=" << max_x.load() << "x" << max_y.load()
               << " off=(" << offset_x.load() << "," << offset_y.load() << ")\n"
               << "      track=" << enable_aim_tracking.load()
               << " yfree=" << y_axis_freedom.load()
-              << " mag=" << magnetic_aim_assist.load() << "\n";
+              << " mag=" << magnetic_aim_assist.load() << "\n"
+              << "      sens=" << head_aim_sensitivity.load()
+              << " accel=" << magnetic_acceleration.load()
+              << " corr=" << magnetic_correction.load() << "\n"
+              << "      lock=" << magnetic_lock_radius.load()
+              << " slow=" << progressive_slowdown_radius.load()
+              << " accR=" << magnetic_acceleration_radius.load()
+              << " fricR=" << magnetic_friction_radius.load() << "\n"
+              << "      outlineY=(" << outline_yellow_r.load() << ","
+              << outline_yellow_g.load() << "," << outline_yellow_b.load() << ")"
+              << " outlineC=(" << outline_cyan_r.load() << ","
+              << outline_cyan_g.load() << "," << outline_cyan_b.load() << ")"
+              << " tol=" << outline_tolerance.load() << "\n";
 }
